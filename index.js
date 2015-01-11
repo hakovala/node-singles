@@ -7,7 +7,6 @@ var fs = require('fs');
 var path = require('path');
 var net = require('net');
 
-
 function Singleton(name) {
 	if (!(this instanceof Singleton))
 		return new Singleton(name);
@@ -24,6 +23,8 @@ function Singleton(name) {
 
 	this.socket = null;
 	this.master = true;
+
+	// TODO: add client array
 
 	process.on('exit', this.close.bind(this));
 	process.on('SIGINT', this.close.bind(this));
