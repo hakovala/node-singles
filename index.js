@@ -130,8 +130,15 @@ Singleton.prototype.send = function(message) {
 
 Singleton.prototype.close = function() {
 	if (this.socket) {
-		this.socket.end();
+		if (this.socket instanceof net.Server) {
+			this.socket.close();
+		} else {
+			this.socket.end();
+		}
 		this.socket = null;
+		try {
+			fs.unlinkSync(this.pidFile);
+		} catch(e) {}
 	}
 };
 
