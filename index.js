@@ -26,6 +26,7 @@ function Singleton(name) {
 	this.master = true;
 
 	process.on('exit', this.close.bind(this));
+	process.on('SIGINT', this.close.bind(this));
 
 	if (fs.existsSync(this.pidFile)) {
 		var other_pid = Number(fs.readFileSync(this.pidFile).toString());
