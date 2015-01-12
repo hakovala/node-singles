@@ -7,6 +7,8 @@ var fs = require('fs');
 var path = require('path');
 var net = require('net');
 
+var onDeath = require('death')({uncaughtException: true});
+
 function Singleton(name) {
 	if (!(this instanceof Singleton))
 		return new Singleton(name);
@@ -26,8 +28,12 @@ function Singleton(name) {
 
 	// TODO: add client array
 
-	process.on('exit', this.close.bind(this));
-	process.on('SIGINT', this.close.bind(this));
+	onDeath(function(signal, err) {
+		debug('death: ' + signal);
+		this.close();
+		if (err) throw err;
+		process.exit();
+	}.bind(this));
 
 	if (fs.existsSync(this.pidFile)) {
 		var other_pid = Number(fs.readFileSync(this.pidFile).toString());
