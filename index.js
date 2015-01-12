@@ -50,37 +50,51 @@ module.exports = Singleton;
 Singleton.prototype.connect = function() {
 	debug('connecting: ' + this.socketPath);
 	this.socket = net.connect({ path: this.socketPath });
+
 	this.socket.on('connect', function() {
 		debug('connected');
-	});
-	this.socket.on('close', this.emit.bind(this, 'close'));
+	}.bind(this));
+
+	this.socket.on('close', function() {
+		this.close();
+		this.emit('close');
+	}.bind(this));
+
+	this.socket.on('data', this._handleMessage.bind(this));
 	this.socket.on('error', this.emit.bind(this, 'error'));
 	this.socket.on('end', this.emit.bind(this, 'end'));
-	this._onConnect(this.socket);
+	this.emit('connect');
 };
 
 Singleton.prototype.createServer = function() {
 	this.socket = net.createServer();
+
 	this.socket.on('listening', function() {
 		debug('listening: ' + this.socketPath);
 		this.emit('listening');
 	}.bind(this));
+
 	this.socket.on('connection', function(client) {
-		this._onConnect(client);
-		this.clients.push(client);
+		client.on('data', this._handleMessage.bind(this));
 		client.on('close', function() {
+			debug('client disconnected');
 			this.clients.splice(this.clients.indexOf(client), 1);
 		}.bind(this));
+		this.clients.push(client);
+
+		this.emit('connection', client);
 		debug('client connected');
 	}.bind(this));
+
+	this.socket.on('close', function() {
+		this.close();
+		this.emit('close');
+	}.bind(this));
+
 	this.socket.on('error', this.emit.bind(this, 'error'));
+
 	this.socket.listen(this.socketPath);
 	debug('server created');
-};
-
-Singleton.prototype._onConnect = function(client) {
-	client.on('data', this._handleMessage.bind(this));
-	this.emit('connection', client);
 };
 
 Singleton.prototype._handleMessage = function(data) {
