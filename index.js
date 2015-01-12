@@ -6,16 +6,16 @@ var os = require('os');
 var fs = require('fs');
 var path = require('path');
 var net = require('net');
-var debug = require('debug')('singleton');
+var debug = require('debug')('singles');
 
 var onDeath = require('death')({uncaughtException: true});
 
-function Singleton(name) {
-	if (!(this instanceof Singleton))
-		return new Singleton(name);
+function Singles(name) {
+	if (!(this instanceof Singles))
+		return new Singles(name);
 
 	if (typeof name !== 'string')
-		throw new Error('Missing Singleton name');
+		throw new Error('Missing Singles name');
 
 	EventEmitter.call(this);
 
@@ -44,10 +44,10 @@ function Singleton(name) {
 		this.createServer();
 	}
 }
-util.inherits(Singleton, EventEmitter);
-module.exports = Singleton;
+util.inherits(Singles, EventEmitter);
+module.exports = Singles;
 
-Singleton.prototype.connect = function() {
+Singles.prototype.connect = function() {
 	debug('connecting: ' + this.socketPath);
 	this.socket = net.connect({ path: this.socketPath });
 
@@ -66,7 +66,7 @@ Singleton.prototype.connect = function() {
 	this.emit('connect');
 };
 
-Singleton.prototype.createServer = function() {
+Singles.prototype.createServer = function() {
 	this.socket = net.createServer();
 
 	this.socket.on('listening', function() {
@@ -101,7 +101,7 @@ Singleton.prototype.createServer = function() {
 	debug('server created');
 };
 
-Singleton.prototype._handleMessage = function(data) {
+Singles.prototype._handleMessage = function(data) {
 	if (!this._buffer) {
 		this._buffer = data;
 	} else if (data) {
@@ -144,7 +144,7 @@ function prepareMessage(msg) {
 	return data;
 }
 
-Singleton.prototype.send = function(message) {
+Singles.prototype.send = function(message) {
 	if (!this.socket) return;
 
 	var data = prepareMessage(message);
@@ -162,7 +162,7 @@ Singleton.prototype.send = function(message) {
 	}
 };
 
-Singleton.prototype.close = function() {
+Singles.prototype.close = function() {
 	if (this.socket) {
 		if (this.socket instanceof net.Server) {
 			this.socket.close();
