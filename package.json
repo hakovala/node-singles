@@ -1,6 +1,7 @@
 {
   "name": "singleton",
   "version": "0.1.0",
+  "description": "Single-instace application with two-way communication between master and client.",
   "main": "index.js",
   "dependencies": {
     "death": "^0.1.0"
