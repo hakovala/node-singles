@@ -63,7 +63,7 @@ if (app.master) {
 
 ### Event: 'connection' (master only)
 
- - `client` Client connection
+ - `client` Client connection, instance of `net.Socket`
 
 Emitted when client connects to the master.
 
