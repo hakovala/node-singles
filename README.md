@@ -15,7 +15,7 @@ npm install singles
 ```js
 var Singles = require('singles');
 
-// create new or connect to instance with specified name
+// create new instance or connect to existing with a specified name
 var app = new Singles('example-app');
 
 app.on('error', function(err) {
