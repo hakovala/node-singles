@@ -4,6 +4,7 @@
   "description": "Single-instace application with two-way communication between master and client.",
   "main": "index.js",
   "dependencies": {
-    "death": "^0.1.0"
+    "death": "^0.1.0",
+    "debug": "^2.1.1"
   }
 }
