@@ -80,6 +80,10 @@ Singleton.prototype.createServer = function() {
 			debug('client disconnected');
 			this.clients.splice(this.clients.indexOf(client), 1);
 		}.bind(this));
+		client.send = function(message) {
+			var json = prepareMessage(message);
+			client.write(json);
+		};
 		this.clients.push(client);
 
 		this.emit('connection', client);
