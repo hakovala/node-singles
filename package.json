@@ -3,8 +3,20 @@
   "version": "0.1.0",
   "description": "Single instance application with two-way communication between master and client.",
   "main": "index.js",
+  "author": {
+  	"name": "Harri Kovalainen",
+  	"email": "hakovala@gmail.com"
+  },
+  "repository": {
+  	"type": "git",
+  	"url": "https://github.com/hakovala/node-singles"
+  },
+  "bugs": {
+  	"url": "http://github.com/hakovala/node-singles/issues"
+  },
   "dependencies": {
     "death": "^0.1.0",
     "debug": "^2.1.1"
-  }
+  },
+  "licence": "MIT"
 }
