@@ -21,7 +21,6 @@ function Singleton(name) {
 	this.name = name;
 
 	this.socketPath = path.join(os.tmpdir(), this.name + '.sock');
-	this.pidFile = path.join(os.tmpdir(), this.name + '.pid');
 
 	this.socket = null;
 	this.master = true;
@@ -35,24 +34,14 @@ function Singleton(name) {
 		process.exit();
 	}.bind(this));
 
-	if (fs.existsSync(this.pidFile)) {
-		var other_pid = Number(fs.readFileSync(this.pidFile).toString());
-		console.log('other pid: ' + other_pid);
-		if (Singleton.isRunning(other_pid)) {
-			this.connect();
-			this.master = false;
-			return this;
-		}
+	if (fs.existsSync(this.socketPath)) {
+		// client mode
+		this.master = false;
+		this.connect();
+	} else {
+		// master mode
+		this.createServer();
 	}
-
-	try {
-		fs.unlinkSync(this.socketPath);
-	} catch (e) {}
-
-	fs.writeFileSync(this.pidFile, process.pid.toString());
-
-	// Master mode
-	this.createServer();
 }
 util.inherits(Singleton, EventEmitter);
 module.exports = Singleton;
@@ -143,19 +132,5 @@ Singleton.prototype.close = function() {
 			this.socket.end();
 		}
 		this.socket = null;
-		try {
-			fs.unlinkSync(this.pidFile);
-		} catch(e) {}
 	}
 };
-
-Singleton.isRunning = function(pid) {
-	try {
-		return process.kill(pid, 0);
-	} catch (e) {
-		return e.code === 'EPERM';
-	}
-};
-
-
-
