@@ -14,6 +14,18 @@
   "bugs": {
   	"url": "http://github.com/hakovala/node-singles/issues"
   },
+  "keywords": [
+    "lock",
+    "single",
+    "instance",
+    "linux",
+    "socket",
+    "singleton",
+    "client",
+    "server",
+    "process",
+    "messaging"
+  ],
   "dependencies": {
     "death": "^0.1.0",
     "debug": "^2.1.1"
